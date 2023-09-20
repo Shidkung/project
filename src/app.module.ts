@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import entities from '../typeors';
 import { TicketpayModule } from './Ticketpay/Ticketpay.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { TicketpayModule } from './Ticketpay/Ticketpay.module';
       }),
       inject: [ConfigService],
     }),
-    UsersModule,TicketpayModule],
+    UsersModule,TicketpayModule,AuthModule],
 
   controllers: [],
   

@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, MinLength } from "class-validator";
 export class CreateUsers_loginDto {
 
   @IsEmail()
-  email: string;
+  username: string;
 
   @IsNotEmpty()
   @MinLength(8)
