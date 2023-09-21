@@ -8,6 +8,7 @@ import { UsersModule } from 'src/user/user.module';
 @Module({
   imports:[TypeOrmModule.forFeature([Ticketpay]),UsersModule],
   controllers: [TicketpaysController],
-  providers: [TicketpayService]
+  providers: [TicketpayService],
+  exports:[TicketpayService]
 })
 export class TicketpayModule {}

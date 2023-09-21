@@ -26,4 +26,30 @@ export class concert {
   })
   PhotoUrl: string;
 
+  @Column({
+    name: 'price',
+    nullable: false,
+    default: 0,
+  })
+  price: number;
+  @Column({
+    name: 'TicketNum',
+    nullable: false,
+    default: 0,
+  })
+  TicketNum: number;
+  @Column({
+    type: 'date',
+    name: 'Strat',
+    nullable: false,
+  })
+  Start: Date;
+  @Column({
+    type: 'date',
+    name: 'End',
+    nullable: false,
+  })
+  End: Date;
+
+
 }

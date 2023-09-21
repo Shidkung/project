@@ -3,19 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { concert } from '../../../typeors';
 import { Repository } from 'typeorm';
 import { CreateconcertDto } from '../dto/concert.dtos';
+import { CreateconcertbuyDto } from '../dto/concert_buy.dtos';
+import { UsersService } from 'src/user/service/user.service';
+import { TicketpayService } from 'src/Ticketpay/service/Ticketpay.service';
 @Injectable()
 export class ConcertService {
     constructor(
-        @InjectRepository(concert) private readonly concertRepository: Repository<concert>
+        @InjectRepository(concert) private readonly concertRepository: Repository<concert>, private UsersService : UsersService,private Ticketpayservice : TicketpayService
       ) {}
-//   private concerts: Concert[] = [
-//     // new Concert(1, 'Concert 1', 'https://example.com/concert1.jpg'),
-//     // new Concert(2, 'Concert 2', 'https://example.com/concert2.jpg'),
-//     // Add more concerts as needed
-    
-//     // GET /concerts: Get a list of all concerts.
-//     // GET /concerts/:id: Get a specific concert by its ID.
-//   ];
+
   getAllConcerts(){
     return this.concertRepository.find();
   }
@@ -26,5 +22,15 @@ export class ConcertService {
   addConcert(CreateconcertDto:CreateconcertDto){
     const addConcert = this.concertRepository.create(CreateconcertDto)
     return this.concertRepository.save(addConcert);
+  }
+  BuyConcert(CreateconcertbuyDto){
+    const user_id = CreateconcertbuyDto.user_id;
+      const search = this.UsersService.findUsersById(user_id);
+      if(search === null){
+        return "Dont have this user"
+      }
+      else{
+        const check = this.Ticketpayservice
+      }
   }
 }

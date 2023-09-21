@@ -40,6 +40,11 @@ export class TicketpayService {
       }
     }
 }
+
+async check(){
+
+}
+
 async Topdown(CreateTicketpayDto: CreateTicketpayDto){
   const string_user = Number(CreateTicketpayDto.user_id);
   const user = await this.usersService.findUsersById(string_user);
@@ -53,18 +58,26 @@ async Topdown(CreateTicketpayDto: CreateTicketpayDto){
       const foundUser = await this.TicketRepository.findOne({where:{user_id:usser}});
       // Handle the found user here
       if (foundUser === null) {
-          const adduser = this.TicketRepository.create(CreateTicketpayDto);
-          return this.TicketRepository.save(adduser);
+          return "Please add Ticketpay"
           // User found, handle accordingly 
-      } else {
-        CreateTicketpayDto.Ticketpay -= foundUser.Ticketpay;
-        if( CreateTicketpayDto.Ticketpay>=0){
+      } else {  
+         if( CreateTicketpayDto.Ticketpay>=0){
           CreateTicketpayDto.Ticketpay *= 1
         }
         else{
           CreateTicketpayDto.Ticketpay *= -1
         }
-          return  this.TicketRepository.update(foundUser.id,CreateTicketpayDto);
+       foundUser.Ticketpay -=  CreateTicketpayDto.Ticketpay;
+       CreateTicketpayDto.Ticketpay = foundUser.Ticketpay
+       if(CreateTicketpayDto.Ticketpay<0)
+       {
+        return "There is not enough to wuthdraw"
+       }
+       else
+       { 
+        return  this.TicketRepository.update(foundUser.id,CreateTicketpayDto);
+       }
+         
            // User not found, handle accordingly
       }
     }
