@@ -34,7 +34,6 @@ export class UsersService {
      
   }
 
-
   findUsersById(id: number) {
     return this.userRepository.findOne({where:{user_id:id}});
   }

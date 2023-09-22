@@ -17,4 +17,8 @@ export class CreateconcerthiringforsaveDto {
 
   @IsNotEmpty()
   Ticketpay:number
+
+  @IsNotEmpty()
+  Accepting:boolean
+
 }

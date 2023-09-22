@@ -6,6 +6,8 @@ import entities from '../typeors';
 import { TicketpayModule } from './Ticketpay/Ticketpay.module';
 import { AuthModule } from './auth/auth.module';
 import { ConcertModule } from './concert/concert.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -26,8 +28,8 @@ import { ConcertModule } from './concert/concert.module';
     }),
     UsersModule,TicketpayModule,AuthModule,ConcertModule],
 
-  controllers: [],
+  controllers: [AppController],
   
-  providers: [],
+  providers: [AppService],
 })
 export class AppModule {}

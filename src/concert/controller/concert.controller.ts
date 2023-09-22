@@ -24,6 +24,22 @@ export class ConcertController {
     }
     return concert;
   }
+
+  @Get('accept')
+  @UsePipes(ValidationPipe)
+  getaccept(@Body()CreateconcerthiringDto:CreateconcerthiringDto){
+      return this.concertService.getaccept(CreateconcerthiringDto)
+  }
+  @Get('inject')
+  @UsePipes(ValidationPipe)
+  getinject(@Body()CreateconcerthiringDto:CreateconcerthiringDto){
+      return this.concertService.getinject(CreateconcerthiringDto)
+  }
+  @Get('hiring')
+  @UsePipes(ValidationPipe)
+  gethiring(@Body() CreateconcerthiringDto:CreateconcerthiringDto) {
+    return this.concertService.gethiring(CreateconcerthiringDto);
+  }
   @Post('create')
   Addconcert(@Body() CreateconcertDto :CreateconcertDto){
     return this.concertService.addConcert(CreateconcertDto);
@@ -53,7 +69,7 @@ export class ConcertController {
         response.status(HttpStatus.CONFLICT).send('Ticket not enough');
         break;
       default:
-        response.status(HttpStatus.OK).send('success');
+        return CreateconcertbuyDto
         break;
     }
   }

@@ -43,5 +43,10 @@ export class TicketpayAll {
   @JoinColumn({ name: 'concert_id' }) // Specify the custom name here
   Concert_id: concert;
 
-  
+  @Column({
+    nullable: false,
+    name:'Accepting',
+    default: false,
+  })
+  Accepting:boolean;
 }

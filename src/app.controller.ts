@@ -1,12 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get ,Body} from '@nestjs/common';
 import { AppService } from './app.service';
+import { CreateconcerthiringDto } from './concert/dto/concert_hiring.dtos';
 
 @Controller("noti")
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get("back")
-  getDatatoback(): string {
-    return this.appService. getDatatoback();
+  getDatatofont(@Body()CreateconcerthiringDto:CreateconcerthiringDto){
+    return this.appService. getDatatofront(CreateconcerthiringDto);
   }
 }
