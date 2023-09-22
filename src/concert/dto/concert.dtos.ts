@@ -8,9 +8,10 @@ export class CreateconcertDto {
   @IsNotEmpty()
   price: number
   @IsNotEmpty()
+  TicketNum: number
+  @IsNotEmpty()
   @IsDate()
   Start:Date;
-
   @IsNotEmpty()
   @IsDate()
   End:Date;

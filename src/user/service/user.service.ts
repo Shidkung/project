@@ -42,5 +42,13 @@ export class UsersService {
   getUsers(){
     return this.userRepository.find()
   }
-  
+
+ async getUserhiring(id : number){
+    const role = 'hiring'
+    return await this.userRepository.findOne({where:{user_id:id,role:role}});
+  }
+  async getUserhiringAll(){
+    const role = 'hiring'
+    return await this.userRepository.findBy({role});
+  }
 }

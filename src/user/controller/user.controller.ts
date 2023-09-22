@@ -12,9 +12,19 @@ import { UsersService } from '../service/user.service';
         return this.userService.getUsers();
       }
       
-      @Get('id/:id')
-      findUsersById(@Param('id', ParseIntPipe) id: number) {
+      @Get('id')
+      findUsersById(@Body('id', ParseIntPipe) id: number) {
         return this.userService.findUsersById(id);
+      }
+
+      @Get('hiring')
+      findhiringUser(@Body('id', ParseIntPipe) id: number){
+        return  this.userService.getUserhiring(id)
+      }
+
+      @Get('hiringAll')
+      findhiringUserAll(){
+        return  this.userService.getUserhiringAll()
       }
       
       @Post('create')

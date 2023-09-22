@@ -1,10 +1,16 @@
-import { IsDate, IsNotEmpty } from "class-validator";
+import {  IsNotEmpty } from "class-validator";
+import { UsersS } from "../../../typeors";
+
 
 export class CreateconcertbuyDto {
   @IsNotEmpty()
-  user_id: number
+  user_id: UsersS
 
   @IsNotEmpty()
-  name: string
+  Ticket: Number
 
+  @IsNotEmpty()
+  Concert_name: string
+
+ 
 }
