@@ -10,6 +10,7 @@ import { CreateTicketpayDto } from 'src/Ticketpay/dto/Ticketpay.dtos';
 import { CreateconcerthiringDto } from '../dto/concert_hiring.dtos';
 import { CreateTicketforbuyDto } from '../dto/Ticketbuy.dtos';
 import { CreateconcerthiringforsaveDto } from '../dto/concert_hiringforsave.dtos';
+import { Create_sccceptingDto } from '../dto/concert_accepting.dtos';
 @Injectable()
 export class ConcertService {
     constructor(
@@ -30,36 +31,39 @@ export class ConcertService {
   getConcertByname(name: string ){
     return this.concertRepository.findOne({where:{name:name}})
   }
-   gethiring(CreateconcerthiringDto:CreateconcerthiringDto){
-      return  this.TicketpayAllRepository.findOne({where:{buyer_id:CreateconcerthiringDto.buyer_id,
-                                                              reciever_id:CreateconcerthiringDto.reciever_id}})
+   async gethiring(Create_sccceptingDto:Create_sccceptingDto){
+      const print = await  this.TicketpayAllRepository.findBy({id:Create_sccceptingDto.id,buyer_id:Create_sccceptingDto.buyer_id, reciever_id:Create_sccceptingDto.reciever_id})
+      console.log(print)
+      return print
   }
 
-  async getaccept(CreateconcerthiringDto:CreateconcerthiringDto){
-    const concert = await this.getConcertByname(CreateconcerthiringDto.Concert_name)
+  async getaccept(Create_sccceptingDto:Create_sccceptingDto){
+    const concert = await this.getConcertByname(Create_sccceptingDto.Concert_name)
+    const not_accept = await this.TicketpayAllRepository.findOne({where:{id:Create_sccceptingDto.id,Accepting:false}});
     const accept : CreateconcerthiringforsaveDto = {
-      buyer_id: CreateconcerthiringDto.buyer_id,
+      buyer_id:  not_accept.buyer_id,
       Concert_id:concert,
-      reciever_id: CreateconcerthiringDto.reciever_id,
-      TicketNum:CreateconcerthiringDto.TicketNum,
-      Ticketpay:Number(CreateconcerthiringDto.TicketNum)*Number(concert.price),
+      reciever_id: not_accept.reciever_id,
+      TicketNum: not_accept.TicketNum,
+      Ticketpay:Number( not_accept.TicketNum)*Number(concert.price),
       Accepting: true
     }
-    const check =  await this.gethiring(CreateconcerthiringDto);
-    return this.TicketpayAllRepository.update(check.id,accept);
+    const check =  await this.gethiring(Create_sccceptingDto); 
+    return this.TicketpayAllRepository.update(not_accept,accept);
   }
 
-  async getinject(CreateconcerthiringDto:CreateconcerthiringDto){
-    const check =  await this.gethiring(CreateconcerthiringDto);
+  async getinject(Create_sccceptingDto:Create_sccceptingDto){
+    const check =  await this.gethiring(Create_sccceptingDto);
+    console.log(check);
     if(check==null){
       return "Dont have this hiring"
     }
-    const concert = await this.getConcertByname(CreateconcerthiringDto.Concert_name)
+    const concert = await this.getConcertByname(Create_sccceptingDto.Concert_name)
     const change: CreateTicketpayDto = {
-      user_id: CreateconcerthiringDto.reciever_id,
-      Ticketpay: Number(concert.price)*Number(CreateconcerthiringDto.TicketNum)
+      user_id: Create_sccceptingDto.reciever_id,
+      Ticketpay: Number(concert.price)*Number(Create_sccceptingDto.TicketNum)
     }
-    return this.Ticketpayservice.Topup(change),this.TicketpayAllRepository.delete(check.id);
+    return this.Ticketpayservice.Topup(change),this.TicketpayAllRepository.delete(Create_sccceptingDto.id);
   }
 
   async gethiringAll(CreateconcerthiringDto:CreateconcerthiringDto){

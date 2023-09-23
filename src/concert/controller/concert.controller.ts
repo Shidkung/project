@@ -7,6 +7,7 @@ import { CreateconcerthiringDto } from '../dto/concert_hiring.dtos';
 import { UsePipes } from '@nestjs/common/decorators';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import { Response } from 'express';
+import { Create_sccceptingDto } from '../dto/concert_accepting.dtos';
 @Controller('concerts')
 export class ConcertController {
   constructor(private readonly concertService: ConcertService) {}
@@ -14,6 +15,10 @@ export class ConcertController {
   @Get()
   getAllConcerts() {
     return this.concertService.getAllConcerts();
+  }
+  @Get('hiring')
+  getAllhiring(@Body()Create_sccceptingDto:Create_sccceptingDto) {
+    return this.concertService.gethiring(Create_sccceptingDto);
   }
 
    @Get('id')
@@ -27,18 +32,18 @@ export class ConcertController {
 
   @Get('accept')
   @UsePipes(ValidationPipe)
-  getaccept(@Body()CreateconcerthiringDto:CreateconcerthiringDto){
+  getaccept(@Body()CreateconcerthiringDto:Create_sccceptingDto){
       return this.concertService.getaccept(CreateconcerthiringDto)
   }
   @Get('inject')
   @UsePipes(ValidationPipe)
-  getinject(@Body()CreateconcerthiringDto:CreateconcerthiringDto){
-      return this.concertService.getinject(CreateconcerthiringDto)
+  getinject(@Body()Create_sccceptingDto:Create_sccceptingDto){
+      return this.concertService.getinject(Create_sccceptingDto)
   }
   @Get('hiring')
   @UsePipes(ValidationPipe)
-  gethiring(@Body() CreateconcerthiringDto:CreateconcerthiringDto) {
-    return this.concertService.gethiring(CreateconcerthiringDto);
+  gethiring(@Body()Create_sccceptingDto:Create_sccceptingDto) {
+    return this.concertService.gethiring(Create_sccceptingDto);
   }
   @Post('create')
   Addconcert(@Body() CreateconcertDto :CreateconcertDto){
