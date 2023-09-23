@@ -222,9 +222,9 @@ export class ConcertService {
                }
                else{
                 
-                 
-                  if(check.Ticketpay>=(concert.price * Number(Create_sccceptingDto.TicketNum))){
-                    const checks = await this.gethiring(Create_sccceptingDto);
+                const checks = await this.gethiring(Create_sccceptingDto); 
+                  if(checks.Ticketpay>=(concert.price * Number(Create_sccceptingDto.TicketNum))){
+                  
                     if(checks.Accepting==true){
                       const change: CreateTicketpayDto = {
                         user_id: checks.reciever_id,
