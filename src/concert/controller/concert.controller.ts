@@ -81,7 +81,7 @@ export class ConcertController {
   @Post('employ')
   @UsePipes(ValidationPipe)
   async employer(@Body() CreateconcerthiringDto:CreateconcerthiringDto,@Res() response: Response){
-    const check = await this.concertService.buyforhiring(CreateconcerthiringDto);
+    const check = await this.concertService.buybyhiring(CreateconcerthiringDto);
     switch (check) {
       case "Dont have this user":
         response.status(HttpStatus.CONFLICT).send('Dont have this user');
@@ -101,13 +101,46 @@ export class ConcertController {
       case "Ticket was sold out":
         response.status(HttpStatus.CONFLICT).send('Ticket was sold out');
         break;
-      case"Ticket not enough":
+      case"Ticketpay not enough":
         response.status(HttpStatus.CONFLICT).send('Ticket not enough');
         break;
       default:
         response.status(HttpStatus.OK).send('success');
         break;
         
+    }
+  }
+
+  @Post('employ/buy')
+  @UsePipes(ValidationPipe)
+  async buyforhiring(@Body() CreateconcerthiringDto:CreateconcerthiringDto,@Res() response: Response){
+    const check = await this.concertService.buybyhiring(CreateconcerthiringDto);
+    switch (check) {
+      case "Dont have this user":
+        response.status(HttpStatus.CONFLICT).send('Dont have this user');
+        break;
+    
+      case"Dont have this account":
+      response.status(HttpStatus.CONFLICT).send('Dont have this account');
+      break;
+
+      case "Please add the Ticket":
+        response.status(HttpStatus.CONFLICT).send('Please add the Ticket');
+        break;
+      
+      case "Dont have this concert":
+        response.status(HttpStatus.CONFLICT).send('Dont have this concert');
+        break;
+
+      case "Ticket was sold out":
+        response.status(HttpStatus.CONFLICT).send('Ticket was sold out');
+        break;
+      case"Ticketpay not enough":
+        response.status(HttpStatus.CONFLICT).send('Ticketpay not enough');
+        break;
+      default:
+        response.status(HttpStatus.OK).send('success');
+        break;   
     }
   }
 }
