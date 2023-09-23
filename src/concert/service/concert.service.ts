@@ -183,7 +183,7 @@ export class ConcertService {
                   const change_amount :CreateconcertDto={
                     name:concert.name,
                     PhotoUrl:concert.PhotoUrl,
-                    TicketNum: concert.TicketNum-Number(CreateconcerthiringDto.TicketNum),
+                    TicketNum: concert.TicketNum,
                     price:concert.price,
                     Start:concert.Start,
                     End:concert.End  
@@ -244,10 +244,11 @@ export class ConcertService {
                             user_id:checks.reciever_id  
                           }
                           const add = this.Ticketforbuyer.create(addTicket);
-                      return this.Ticketpayservice.Topdown(change),this.concertRepository.update(concert.id,change_amount),this.Ticketforbuyer.save(add),this.TicketpayAllRepository.delete(checks.id),"Successful";
-                        }
-                        else{
-                          return"Not accept"
+                          this.TicketpayAllRepository.delete(checks.id)
+                          this.Ticketforbuyer.save(add)
+                          this.concertRepository.update(concert.id,change_amount)
+                          this.Ticketpayservice.Topdown(change)
+                      return "Successful";
                         }
                 }
                   else{
