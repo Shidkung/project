@@ -32,8 +32,8 @@ export class ConcertController {
 
   @Get('accept')
   @UsePipes(ValidationPipe)
-  getaccept(@Body()CreateconcerthiringDto:Create_sccceptingDto){
-      return this.concertService.getaccept(CreateconcerthiringDto)
+  getaccept(@Body()Create_sccceptingDto:Create_sccceptingDto){
+      return this.concertService.getaccept(Create_sccceptingDto)
   }
   @Get('inject')
   @UsePipes(ValidationPipe)
@@ -113,17 +113,13 @@ export class ConcertController {
 
   @Post('employbuy')
   @UsePipes(ValidationPipe)
-  async buyforhiring(@Body() CreateconcerthiringDto:CreateconcerthiringDto,@Res() response: Response){
-    const check = await this.concertService.buybyhiring(CreateconcerthiringDto);
+  async buyforhiring(@Body() Create_sccceptingDto:Create_sccceptingDto,@Res() response: Response){
+    const check = await this.concertService.buyforhiring(Create_sccceptingDto);
     switch (check) {
       case "Dont have this user":
         response.status(HttpStatus.CONFLICT).send('Dont have this user');
         break;
-    
-      case"Dont have this account":
-      response.status(HttpStatus.CONFLICT).send('Dont have this account');
-      break;
-
+  
       case "Please add the Ticket":
         response.status(HttpStatus.CONFLICT).send('Please add the Ticket');
         break;
@@ -137,16 +133,14 @@ export class ConcertController {
         break;
       case"Ticketpay not enough":
         response.status(HttpStatus.CONFLICT).send('Ticketpay not enough');
+        break; 
+
+      case 'Dont have this hiring':
+        response.status(HttpStatus.CONFLICT).send('Dont have this hiring');
         break;
-      
-      
+
       default:
-        if(check == "success"){
         response.status(HttpStatus.OK).send('success');
-        }
-        else if(check =="Not accept"){
-          response.status(HttpStatus.CONFLICT).send('Not accept');
-        }
         break;   
     }
   }

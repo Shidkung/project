@@ -15,7 +15,4 @@ export class Create_sccceptingDto {
   @IsNotEmpty()
   reciever_id: UsersS
 
-  @IsNotEmpty()  
-  TicketNum:number
-
 }
