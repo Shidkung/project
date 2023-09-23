@@ -111,7 +111,7 @@ export class ConcertController {
     }
   }
 
-  @Post('employ/buy')
+  @Post('employbuy')
   @UsePipes(ValidationPipe)
   async buyforhiring(@Body() CreateconcerthiringDto:CreateconcerthiringDto,@Res() response: Response){
     const check = await this.concertService.buybyhiring(CreateconcerthiringDto);
