@@ -16,9 +16,9 @@ export class ConcertController {
   getAllConcerts() {
     return this.concertService.getAllConcerts();
   }
-  @Get('hiring')
+  @Get('hiringAll')
   getAllhiring(@Body()Create_sccceptingDto:Create_sccceptingDto) {
-    return this.concertService.gethiring(Create_sccceptingDto);
+    return this.concertService.gethiringAll(Create_sccceptingDto);
   }
 
    @Get('id')

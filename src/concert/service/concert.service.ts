@@ -65,8 +65,8 @@ export class ConcertService {
     return this.Ticketpayservice.Topup(change),this.TicketpayAllRepository.delete(Create_sccceptingDto.id);
   }
 
-  async gethiringAll(CreateconcerthiringDto:CreateconcerthiringDto){
-    const buyer_id = CreateconcerthiringDto.buyer_id
+  async gethiringAll(Create_sccceptingDto:Create_sccceptingDto){
+    const buyer_id = Create_sccceptingDto.buyer_id
     return await this.TicketpayAllRepository.findBy({buyer_id})
 }
 
