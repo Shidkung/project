@@ -221,10 +221,11 @@ export class ConcertService {
                 return "Ticket was sold out"
                }
                else{
-               
-                  const checks = await this.gethiring(Create_sccceptingDto);
+                
+                 
                   if(check.Ticketpay>=(concert.price * Number(Create_sccceptingDto.TicketNum))){
-
+                    const checks = await this.gethiring(Create_sccceptingDto);
+                    if(checks.Accepting==true){
                       const change: CreateTicketpayDto = {
                         user_id: checks.reciever_id,
                         Ticketpay:checks.Ticketpay
@@ -243,8 +244,11 @@ export class ConcertService {
                             user_id:checks.reciever_id  
                           }
                           const add = this.Ticketforbuyer.create(addTicket);
-                      return this.Ticketpayservice.Topdown(change),this.concertRepository.update(concert.id,change_amount),this.Ticketforbuyer.save(add),"Successful";
-                  
+                      return this.Ticketpayservice.Topdown(change),this.concertRepository.update(concert.id,change_amount),this.Ticketforbuyer.save(add),this.TicketpayAllRepository.delete(checks.id),"Successful";
+                        }
+                        else{
+                          return"Not accept"
+                        }
                 }
                   else{
                     return "Ticketpay not enough"

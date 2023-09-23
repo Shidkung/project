@@ -138,8 +138,15 @@ export class ConcertController {
       case"Ticketpay not enough":
         response.status(HttpStatus.CONFLICT).send('Ticketpay not enough');
         break;
+      
+      
       default:
+        if(check == "success"){
         response.status(HttpStatus.OK).send('success');
+        }
+        else if(check =="Not accept"){
+          response.status(HttpStatus.CONFLICT).send('Not accept');
+        }
         break;   
     }
   }
