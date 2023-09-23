@@ -32,7 +32,7 @@ export class ConcertService {
     return this.concertRepository.findOne({where:{name:name}})
   }
    async gethiring(Create_sccceptingDto:Create_sccceptingDto){
-      const print = await  this.TicketpayAllRepository.findBy({id:Create_sccceptingDto.id,buyer_id:Create_sccceptingDto.buyer_id, reciever_id:Create_sccceptingDto.reciever_id})
+      const print = await  this.TicketpayAllRepository.findOne({where:{id:Create_sccceptingDto.id,buyer_id:Create_sccceptingDto.buyer_id, reciever_id:Create_sccceptingDto.reciever_id}})
       console.log(print)
       return print
   }
@@ -49,9 +49,9 @@ export class ConcertService {
       Accepting: true
     }
     const check =  await this.gethiring(Create_sccceptingDto); 
-    return this.TicketpayAllRepository.update(not_accept,accept);
+    return this.TicketpayAllRepository.update(check.id,accept);
   }
-
+  
   async getinject(Create_sccceptingDto:Create_sccceptingDto){
     const check =  await this.gethiring(Create_sccceptingDto);
     console.log(check);
@@ -129,7 +129,7 @@ export class ConcertService {
         }
       }
   }
-  async buyforhiring(CreateconcerthiringDto:CreateconcerthiringDto){
+  async buybyhiring(CreateconcerthiringDto:CreateconcerthiringDto){
     const user_id = CreateconcerthiringDto.reciever_id;
     const user_idd = Number(user_id)
     const reciever = await this.UsersService.findUsersById(user_idd);
@@ -163,7 +163,7 @@ export class ConcertService {
               }
               else{
                 if(check.Ticketpay<=(CreateconcerthiringDto.TicketNum * concert.price)){
-                    return "Ticket not enough"
+                    return "Ticketpay not enough"
                 }
                 else{
                   const change: CreateTicketpayDto = {
@@ -199,4 +199,61 @@ export class ConcertService {
     }
 
   }
-}
+  async buyforhiring(Create_sccceptingDto:Create_sccceptingDto){
+    const user_id = Create_sccceptingDto.reciever_id;
+    const user_idd = Number(user_id)
+      const search = this.UsersService.findUsersById(user_idd);
+      if(search === null){
+        return "Dont have this user"
+      }
+      else{
+        const check= await this.Ticketpayservice.check(Create_sccceptingDto.reciever_id);
+        if(check===null){
+          return "Please add the Ticket"
+        }
+        else{
+            const concert = await this.getConcertByname(Create_sccceptingDto.Concert_name);
+            if(concert===null){
+                return "Dont have this concert"
+            }
+            else{
+               if(concert.TicketNum<=0){
+                return "Ticket was sold out"
+               }
+               else{
+               
+                  const checks = await this.gethiring(Create_sccceptingDto);
+                  if(check.Ticketpay>=(concert.price * Number(Create_sccceptingDto.TicketNum))){
+
+                      const change: CreateTicketpayDto = {
+                        user_id: checks.reciever_id,
+                        Ticketpay:checks.Ticketpay
+                      }
+                      const change_amount :CreateconcertDto={
+                            name:concert.name,
+                            PhotoUrl:concert.PhotoUrl,
+                            TicketNum: concert.TicketNum-Number(checks.TicketNum),
+                            price:concert.price,
+                            Start:concert.Start,
+                            End:concert.End                      
+                          }
+                          const addTicket : CreateTicketforbuyDto={
+                            Concert_id : concert,
+                            Ticket:Number(checks.TicketNum),
+                            user_id:checks.reciever_id  
+                          }
+                          const add = this.Ticketforbuyer.create(addTicket);
+                      return this.Ticketpayservice.Topdown(change),this.concertRepository.update(concert.id,change_amount),this.Ticketforbuyer.save(add),"Successful";
+                  
+                }
+                  else{
+                    return "Ticketpay not enough"
+                  }
+                }
+               }
+
+            }
+        }
+      }
+
+  }
