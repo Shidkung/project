@@ -244,11 +244,11 @@ export class ConcertService {
                             user_id:checks.reciever_id  
                           }
                           const add = this.Ticketforbuyer.create(addTicket);
-                          this.TicketpayAllRepository.delete(checks.id)
+                          
                           this.Ticketforbuyer.save(add)
                           this.concertRepository.update(concert.id,change_amount)
                           this.Ticketpayservice.Topdown(change)
-                      return "Successful";
+                      return this.TicketpayAllRepository.delete(checks.id);
                         }
                 }
                   else{
