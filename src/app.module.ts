@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module,NestModule, MiddlewareConsumer} from '@nestjs/common';
 import { UsersModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {TypeOrmModule} from '@nestjs/typeorm';
@@ -8,7 +8,6 @@ import { AuthModule } from './auth/auth.module';
 import { ConcertModule } from './concert/concert.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -33,3 +32,7 @@ import { AppService } from './app.service';
   providers: [AppService],
 })
 export class AppModule {}
+
+
+
+
