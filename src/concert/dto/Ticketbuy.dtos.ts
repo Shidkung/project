@@ -4,7 +4,7 @@ import { concert } from "../../../typeors";
 
 export class CreateTicketforbuyDto {
   @IsNotEmpty()
-  user_id: UsersS
+  user_id: number
 
   @IsNotEmpty()
   Ticket: number

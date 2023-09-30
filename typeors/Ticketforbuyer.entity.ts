@@ -28,9 +28,11 @@ export class Ticketforbuyer {
   @JoinColumn({ name: 'concert_id' }) // Specify the custom concert here
   Concert_id: concert;
 
-
-  @ManyToOne(() => UsersS, (users) => users.user_id)
-  @JoinColumn({ name: 'user_id' }) // Specify the custom name here
-  user_id: UsersS;
+  @Column({
+    nullable: false,
+    name:'user_id',
+    default: 0,
+  }) // Specify the custom name here
+  user_id: number;
 
 }

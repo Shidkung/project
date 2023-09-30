@@ -2,6 +2,7 @@ import {Body,Controller,Get,HttpCode,Param,ParseIntPipe,Post,UsePipes,Validation
 import { Response } from 'express';
 import { CreateTicketpayDto } from '../dto/Ticketpay.dtos';
 import { TicketpayService } from '../service/Ticketpay.service';
+import { UsersS } from 'typeors';
 
     @Controller('Ticketpay')
     export class TicketpaysController {
@@ -36,6 +37,9 @@ import { TicketpayService } from '../service/Ticketpay.service';
           response.status(HttpStatus.CREATED).send('Your Ticket have withdraw');
         }
       }
-      
+      @Post('getTicket')
+      findUsersById(@Body('id', ParseIntPipe) id: number) {
+        return this.TicketpayService.check(id);
+      }
       
     }

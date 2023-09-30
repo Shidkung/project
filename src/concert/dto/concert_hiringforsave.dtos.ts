@@ -3,14 +3,14 @@ import { UsersS, concert } from "../../../typeors";
 
 export class CreateconcerthiringforsaveDto {
   @IsNotEmpty()
-  buyer_id: UsersS
+  buyer_id:number
 
   @IsNotEmpty()
-  Concert_id: concert
+  Concert_id: number
   
 
   @IsNotEmpty()
-  reciever_id: UsersS
+  reciever_id: number
 
   @IsNotEmpty()  
   TicketNum:number

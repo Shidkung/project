@@ -4,7 +4,7 @@ import { UsersS } from "typeors";
 export class CreateTicketpayDto {
 
   @IsNotEmpty()
-  user_id: UsersS;
+  user_id: number;
 
   @IsNotEmpty()
   Ticketpay: number;

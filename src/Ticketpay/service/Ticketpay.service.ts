@@ -41,7 +41,7 @@ export class TicketpayService {
     }
 }
 
-async check(user_id:UsersS){
+async check(user_id:number){
       return this.TicketRepository.findOne({where:{user_id:user_id}})
 }
 

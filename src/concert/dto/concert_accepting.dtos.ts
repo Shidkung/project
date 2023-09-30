@@ -6,13 +6,14 @@ export class Create_sccceptingDto {
   @IsNotEmpty()
   id: number
   @IsNotEmpty()
-  buyer_id: UsersS
+  buyer_id: number
 
   @IsNotEmpty()
   Concert_name: string
-  
 
   @IsNotEmpty()
-  reciever_id: UsersS
+  reciever_id: number
+  
+
 
 }

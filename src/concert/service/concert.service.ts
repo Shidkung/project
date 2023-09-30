@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Ticketforbuyer,concert,TicketpayAll } from '../../../typeors';
+import { Ticketforbuyer,concert,TicketpayAll, UsersS } from '../../../typeors';
 import { Repository } from 'typeorm';
 import { CreateconcertDto } from '../dto/concert.dtos';
 import { CreateconcertbuyDto } from '../dto/concert_buy.dtos';
@@ -11,6 +11,7 @@ import { CreateconcerthiringDto } from '../dto/concert_hiring.dtos';
 import { CreateTicketforbuyDto } from '../dto/Ticketbuy.dtos';
 import { CreateconcerthiringforsaveDto } from '../dto/concert_hiringforsave.dtos';
 import { Create_sccceptingDto } from '../dto/concert_accepting.dtos';
+import { Test } from '@nestjs/testing';
 @Injectable()
 export class ConcertService {
     constructor(
@@ -27,12 +28,15 @@ export class ConcertService {
   getConcertById(id: number){
     return this.concertRepository.findOne({where:{id:id}})
   }
-
+  gettICKETConcertById(id: number){
+    return this.Ticketforbuyer.findAndCount({where:{user_id:id}});
+  }
   getConcertByname(name: string ){
     return this.concertRepository.findOne({where:{name:name}})
   }
    async gethiring(Create_sccceptingDto:Create_sccceptingDto){
-      const print = await  this.TicketpayAllRepository.findOne({where:{id:Create_sccceptingDto.id,buyer_id:Create_sccceptingDto.buyer_id, reciever_id:Create_sccceptingDto.reciever_id}})
+      const print = await  this.TicketpayAllRepository.findOne({where:{id:Create_sccceptingDto.id,buyer_id:Create_sccceptingDto.buyer_id, reciever_id:Number(Create_sccceptingDto.reciever_id)}})
+      console.log(print.Concert_id)
       return print
   }
 
@@ -40,9 +44,9 @@ export class ConcertService {
     const concert = await this.getConcertByname(Create_sccceptingDto.Concert_name)
     const not_accept = await this.TicketpayAllRepository.findOne({where:{id:Create_sccceptingDto.id,Accepting:false}});
     const accept : CreateconcerthiringforsaveDto = {
-      buyer_id:  not_accept.buyer_id,
-      Concert_id:concert,
-      reciever_id: not_accept.reciever_id,
+      buyer_id: Number(not_accept.buyer_id),
+      Concert_id:Number(concert.id),
+      reciever_id:Number(not_accept.reciever_id),
       TicketNum: not_accept.TicketNum,
       Ticketpay:Number( not_accept.TicketNum)*Number(concert.price),
       Accepting: true
@@ -65,9 +69,10 @@ export class ConcertService {
     return this.Ticketpayservice.Topup(change),this.TicketpayAllRepository.delete(Create_sccceptingDto.id);
   }
 
-  async gethiringAll(Create_sccceptingDto:Create_sccceptingDto){
-    const buyer_id = Create_sccceptingDto.buyer_id
-    return await this.TicketpayAllRepository.findBy({buyer_id})
+  async gethiringAll(buyer_id:number){
+    const test = await this.TicketpayAllRepository.find({where:{buyer_id:buyer_id}});
+      
+    return test
 }
 
   addConcert(CreateconcertDto:CreateconcertDto){
@@ -99,7 +104,7 @@ export class ConcertService {
                else{
                   if(check.Ticketpay>=(concert.price * Number(CreateconcertbuyDto.Ticket))){
                       const change: CreateTicketpayDto = {
-                        user_id: CreateconcertbuyDto.user_id,
+                        user_id: Number(CreateconcertbuyDto.user_id),
                         Ticketpay: Number(concert.price)*Number(CreateconcertbuyDto.Ticket)
                       }
                       const change_amount :CreateconcertDto={
@@ -168,9 +173,9 @@ export class ConcertService {
                   }
 
                   const addforhiring:CreateconcerthiringforsaveDto = {
-                      buyer_id : buyer,
-                      Concert_id:concert,
-                      reciever_id:reciever,
+                      buyer_id : Number(buyer.user_id),
+                      Concert_id:Number(concert.id),
+                      reciever_id:Number(reciever.user_id),
                       TicketNum:CreateconcerthiringDto.TicketNum,
                       Ticketpay:Number(CreateconcerthiringDto.TicketNum * concert.price),
                       Accepting : false
@@ -205,13 +210,22 @@ export class ConcertService {
                 return "Dont have this concert"
             }
             else{
+              const checks = await this.gethiring(Create_sccceptingDto); 
                if(concert.TicketNum<=0){
-                return "Ticket was sold out"
+                const change: CreateTicketpayDto = {
+                  user_id: checks.reciever_id,
+                  Ticketpay: concert.price*Number(checks.TicketNum)
+                }
+                return this.Ticketpayservice.Topdown(change),this.TicketpayAllRepository.delete(checks.id),"Ticket was sold out"
                }
                else{
-                const checks = await this.gethiring(Create_sccceptingDto); 
+                
                 if(checks == null){
-                  return "Dont have this hiring"
+                  const change: CreateTicketpayDto = {
+                    user_id: checks.reciever_id,
+                    Ticketpay: concert.price*Number(checks.TicketNum)
+                  }
+                  return this.Ticketpayservice.Topdown(change),this.TicketpayAllRepository.delete(checks.id),"Dont have this hiring"
                 }
                 
                   if(checks.Ticketpay>=(concert.price * checks.TicketNum)){

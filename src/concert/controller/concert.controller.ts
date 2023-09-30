@@ -8,6 +8,7 @@ import { UsePipes } from '@nestjs/common/decorators';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import { Response } from 'express';
 import { Create_sccceptingDto } from '../dto/concert_accepting.dtos';
+import { UsersS } from 'typeors';
 @Controller('concerts')
 export class ConcertController {
   constructor(private readonly concertService: ConcertService) {}
@@ -16,12 +17,22 @@ export class ConcertController {
   getAllConcerts() {
     return this.concertService.getAllConcerts();
   }
-  @Get('hiringAll')
-  getAllhiring(@Body()Create_sccceptingDto:Create_sccceptingDto) {
-    return this.concertService.gethiringAll(Create_sccceptingDto);
+  @Post('hiringAll')
+
+  getAllhiring(@Body('buyer_id', ParseIntPipe)buyer_id:number) {
+    return this.concertService.gethiringAll(buyer_id);
   }
 
-   @Get('id')
+   @Post('Ticket_id')
+   gettICKETConcertById(@Body('id', ParseIntPipe) id: number) {
+    const concert = this.concertService.gettICKETConcertById(id);
+    if (!concert) {
+      throw new NotFoundException('dont have Ticket');
+    }
+    return concert;
+  }
+
+  @Post('id')
   getConcertById(@Body('id', ParseIntPipe) id: number) {
     const concert = this.concertService.getConcertById(id);
     if (!concert) {
@@ -30,12 +41,12 @@ export class ConcertController {
     return concert;
   }
 
-  @Get('accept')
+  @Post('accept')
   @UsePipes(ValidationPipe)
   getaccept(@Body()Create_sccceptingDto:Create_sccceptingDto){
       return this.concertService.getaccept(Create_sccceptingDto)
   }
-  @Get('inject')
+  @Post('inject')
   @UsePipes(ValidationPipe)
   getinject(@Body()Create_sccceptingDto:Create_sccceptingDto){
       return this.concertService.getinject(Create_sccceptingDto)

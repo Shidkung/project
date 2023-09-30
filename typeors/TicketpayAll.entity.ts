@@ -31,17 +31,27 @@ export class TicketpayAll {
   })
   TicketNum:number;
 
-  @ManyToOne(() => UsersS, (users) => users.user_id)
-  @JoinColumn({ name: 'buyer_id' }) // Specify the custom name here
-  buyer_id: UsersS;
+  @Column({
+    nullable: false,
+    name:' buyer_id',
+    default: 0,
+  }) // Specify the custom name here
+  buyer_id: number;
 
-  @ManyToOne(() => UsersS, (users) => users.user_id)
-  @JoinColumn({ name: 'reciever_id' }) // Specify the custom name here
-  reciever_id: UsersS;
+  @Column({
+    nullable: false,
+    name:'reciever_id',
+    default:0,
+  }) 
+ // Specify the custom name here
+  reciever_id: number;
 
-  @ManyToOne(() => concert, (concert) => concert.id)
-  @JoinColumn({ name: 'concert_id' }) // Specify the custom name here
-  Concert_id: concert;
+  @Column({
+    nullable: false,
+    name:'Concert_id',
+    default: 0,
+  }) 
+  Concert_id: number;
 
   @Column({
     nullable: false,
