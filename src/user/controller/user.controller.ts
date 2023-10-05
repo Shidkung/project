@@ -12,12 +12,12 @@ import { UsersService } from '../service/user.service';
         return this.userService.getUsers();
       }
       
-      @Get('id')
+      @Post('id')
       findUsersById(@Body('id', ParseIntPipe) id: number) {
         return this.userService.findUsersById(id);
       }
 
-      @Get('hiring')
+      @Post('hiring')
       findhiringUser(@Body('id', ParseIntPipe) id: number){
         return  this.userService.getUserhiring(id)
       }

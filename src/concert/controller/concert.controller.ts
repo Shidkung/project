@@ -20,7 +20,7 @@ export class ConcertController {
   @Post('hiringAll')
 
   getAllhiring(@Body('buyer_id', ParseIntPipe)buyer_id:number) {
-    return this.concertService.gethiringAll(buyer_id);
+    return this.concertService.gethiringAll(buyer_id); 
   }
 
    @Post('Ticket_id')
