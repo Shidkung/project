@@ -23,10 +23,12 @@ export class Ticketforbuyer {
   })
   Ticket:number;
 
-
-  @ManyToOne(() => concert, (Concert) => Concert.id)
-  @JoinColumn({ name: 'concert_id' }) // Specify the custom concert here
-  Concert_id: concert;
+  @Column({
+    nullable: false,
+    name:'Concert_id',
+    default: 0,
+  })
+  Concert_id:number;
 
   @Column({
     nullable: false,

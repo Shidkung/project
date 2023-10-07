@@ -59,4 +59,11 @@ export class TicketpayAll {
     default: false,
   })
   Accepting:boolean;
+  
+  @Column({
+    nullable: false,
+    name:'Complete',
+    default: false,
+  })
+  Complete:boolean;
 }

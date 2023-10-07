@@ -1,5 +1,6 @@
 import {  IsNotEmpty ,IsDate} from "class-validator";
-export class Create_sccceptingDto {
+
+export class Create_completeDto {
     
   @IsNotEmpty()
   id: number

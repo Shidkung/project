@@ -10,6 +10,6 @@ export class CreateTicketforbuyDto {
   Ticket: number
 
   @IsNotEmpty()
-  Concert_id: concert
+  Concert_id: number
 
 }

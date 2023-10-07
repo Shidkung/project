@@ -21,6 +21,7 @@ export class ConcertService {
          private UsersService : UsersService,private Ticketpayservice : TicketpayService
       ) {}
 
+      
   getAllConcerts(){
     return this.concertRepository.find();
   }
@@ -28,9 +29,22 @@ export class ConcertService {
   getConcertById(id: number){
     return this.concertRepository.findOne({where:{id:id}})
   }
-  gettICKETConcertById(id: number){
-    return this.Ticketforbuyer.findAndCount({where:{user_id:id}});
+  async gettICKETConcertById(id: number){
+    const get_TIcket = await this.Ticketforbuyer.find({where:{user_id:id}});
+    let myArray = new Array(get_TIcket.length);
+    let myObject = new Object();
+    for(let i = 0; i<get_TIcket.length;i++){
+        const concert_id = get_TIcket[i].Concert_id
+        const concert = await this.concertRepository.find({where:{id:concert_id}})
+        myObject = {
+          url : concert[i].PhotoUrl,
+          Concert_name : concert[i].name,
+          Ticketnum : get_TIcket[i].Ticket
+        }
+        myArray[i] = myObject
   }
+  return myArray
+}
   getConcertByname(name: string ){
     return this.concertRepository.findOne({where:{name:name}})
   }
@@ -173,7 +187,7 @@ async getrecievingAll(reciever_id:number){
                             End:concert.End                      
                           }
                           const addTicket : CreateTicketforbuyDto={
-                            Concert_id : concert,
+                            Concert_id : Number(concert.id),
                             Ticket:Number(CreateconcertbuyDto.Ticket),
                             user_id:change.user_id  
                           }
@@ -195,6 +209,7 @@ async getrecievingAll(reciever_id:number){
       }
    }
   async buybyhiring(CreateconcerthiringDto:CreateconcerthiringDto){
+    const hiringvalue = 300;
     const user_id = CreateconcerthiringDto.reciever_id;
     const user_idd = Number(user_id)
     const reciever = await this.UsersService.findUsersById(user_idd);
@@ -224,13 +239,13 @@ async getrecievingAll(reciever_id:number){
                 return "Please add the Ticket"
               }
               else{
-                if(check.Ticketpay<=(CreateconcerthiringDto.TicketNum * concert.price)){
+                if(check.Ticketpay<=((CreateconcerthiringDto.TicketNum * concert.price)+hiringvalue)){
                     return "Ticketpay not enough"
                 }
                 else{
                   const change: CreateTicketpayDto = {
                     user_id: CreateconcerthiringDto.reciever_id,
-                    Ticketpay: concert.price*Number(CreateconcerthiringDto.TicketNum)
+                    Ticketpay: concert.price*Number(CreateconcerthiringDto.TicketNum)+hiringvalue
                   }
 
                   const addforhiring:CreateconcerthiringforsaveDto = {
@@ -238,7 +253,7 @@ async getrecievingAll(reciever_id:number){
                       Concert_id:Number(concert.id),
                       reciever_id:Number(reciever.user_id),
                       TicketNum:CreateconcerthiringDto.TicketNum,
-                      Ticketpay:Number(CreateconcerthiringDto.TicketNum * concert.price),
+                      Ticketpay:Number(CreateconcerthiringDto.TicketNum * concert.price)+hiringvalue,
                       Accepting : false
                   }
         
@@ -254,6 +269,7 @@ async getrecievingAll(reciever_id:number){
 
   }
   async buyforhiring(Create_sccceptingDto:Create_sccceptingDto){
+    const hiringvalue = 300;
     const user_id = Create_sccceptingDto.reciever_id;
     const user_idd = Number(user_id)
       const search = await this.UsersService.findUsersById(user_idd);
@@ -275,7 +291,7 @@ async getrecievingAll(reciever_id:number){
                if(concert.TicketNum<=0){
                 const change: CreateTicketpayDto = {
                   user_id: checks.reciever_id,
-                  Ticketpay: concert.price*Number(checks.TicketNum)
+                  Ticketpay: concert.price*Number(checks.TicketNum)-hiringvalue
                 }
                 return this.Ticketpayservice.Topdown(change),this.TicketpayAllRepository.delete(checks.id),"Ticket was sold out"
                }
@@ -284,14 +300,18 @@ async getrecievingAll(reciever_id:number){
                 if(checks == null){
                   const change: CreateTicketpayDto = {
                     user_id: checks.reciever_id,
-                    Ticketpay: concert.price*Number(checks.TicketNum)
+                    Ticketpay: concert.price*Number(checks.TicketNum)-hiringvalue
                   }
                   return this.Ticketpayservice.Topdown(change),this.TicketpayAllRepository.delete(checks.id),"Dont have this hiring"
                 }
                 
-                  if(checks.Ticketpay>=(concert.price * checks.TicketNum)){
+                  if(checks.Ticketpay-hiringvalue>=(concert.price * checks.TicketNum)){
                     if(checks.Accepting==true){
-             
+                      const hiring_money: CreateTicketpayDto = {
+                        user_id: checks.reciever_id,
+                        Ticketpay: hiringvalue
+                      }
+                    
                       const change_amount :CreateconcertDto={
                             name:concert.name,
                             PhotoUrl:concert.PhotoUrl,
@@ -301,13 +321,13 @@ async getrecievingAll(reciever_id:number){
                             End:concert.End                      
                           }
                           const addTicket : CreateTicketforbuyDto={
-                            Concert_id : concert,
+                            Concert_id : concert.id,
                             Ticket:checks.TicketNum,
                             user_id: Create_sccceptingDto.reciever_id
                           }
                           const add = this.Ticketforbuyer.create(addTicket);
                           console.log(add)
-                         return this.TicketpayAllRepository.delete(checks.id),this.Ticketforbuyer.save(add),this.concertRepository.update(concert.id,change_amount),"success"
+                         return this.Ticketpayservice.Topup(hiring_money),this.TicketpayAllRepository.delete(checks.id),this.Ticketforbuyer.save(add),this.concertRepository.update(concert.id,change_amount),"success"
                         }
                   else{
                     return "Ticketpay not enough"
