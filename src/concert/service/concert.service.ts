@@ -71,8 +71,65 @@ export class ConcertService {
 
   async gethiringAll(buyer_id:number){
     const test = await this.TicketpayAllRepository.find({where:{buyer_id:buyer_id}});
+    let myArray = new Array(test.length);
+    let myObject = new Object();
+      for(let i = 0; i<test.length;i++){
+        const reciever = await this.UsersService.findUsersById(test[i].reciever_id);
+        const reciever_name = reciever.username;
+        const buyer = await this.UsersService.findUsersById(test[i].buyer_id);
+        const buyer_name = buyer.username;
+        const concert = await this.getConcertById(test[i].Concert_id)
+        const concert_name = concert.name
+        myObject={
+          id:test[i].id,
+          reciever_id : reciever.user_id,
+            reciever_username : reciever_name,
+            reciever_name : reciever.name,
+            buyer_id : buyer.user_id,
+            buyer_username : buyer_name,
+            buyer_name : buyer.name,
+            concert_id : concert.id,
+            concert_name : concert_name,
+            Ticketpay : test[i].Ticketpay,
+            TicketNum : test[i].TicketNum,
+            Accepting : test[i].Accepting
+
+        }
+        myArray[i] = myObject
+        
+      }
+    return myArray
+}
+async getrecievingAll(reciever_id:number){
+  const test = await this.TicketpayAllRepository.find({where:{reciever_id:reciever_id}});
+  let myArray = new Array(test.length);
+  let myObject = new Object();
+    for(let i = 0; i<test.length;i++){
+      const reciever = await this.UsersService.findUsersById(test[i].reciever_id);
+      const reciever_name = reciever.username;
+      const buyer = await this.UsersService.findUsersById(test[i].buyer_id);
+      const buyer_name = buyer.username;
+      const concert = await this.getConcertById(test[i].Concert_id)
+      const concert_name = concert.name
+      myObject={
+        id:test[i].id,
+        reciever_id : reciever.user_id,
+          reciever_username : reciever_name,
+          reciever_name : reciever.name,
+          buyer_id : buyer.user_id,
+          buyer_username : buyer_name,
+          buyer_name : buyer.name,
+          concert_id : concert.id,
+          concert_name : concert_name,
+          Ticketpay : test[i].Ticketpay,
+          TicketNum : test[i].TicketNum,
+          Accepting : test[i].Accepting
+
+      }
+      myArray[i] = myObject
       
-    return test
+    }
+  return myArray
 }
 
   addConcert(CreateconcertDto:CreateconcertDto){
@@ -83,7 +140,7 @@ export class ConcertService {
   async BuyConcert(CreateconcertbuyDto:CreateconcertbuyDto){
     const user_id = CreateconcertbuyDto.user_id;
     const user_idd = Number(user_id)
-      const search = this.UsersService.findUsersById(user_idd);
+     const search = this.UsersService.findUsersById(user_idd);
       if(search === null){
         return "Dont have this user"
       }
@@ -102,7 +159,7 @@ export class ConcertService {
                 return "Ticket was sold out"
                }
                else{
-                  if(check.Ticketpay>=(concert.price * Number(CreateconcertbuyDto.Ticket))){
+                 if(check.Ticketpay>=(concert.price * Number(CreateconcertbuyDto.Ticket))){
                       const change: CreateTicketpayDto = {
                         user_id: Number(CreateconcertbuyDto.user_id),
                         Ticketpay: Number(concert.price)*Number(CreateconcertbuyDto.Ticket)
@@ -120,10 +177,14 @@ export class ConcertService {
                             Ticket:Number(CreateconcertbuyDto.Ticket),
                             user_id:change.user_id  
                           }
-                          const add = this.Ticketforbuyer.create(addTicket);
-                      return this.Ticketpayservice.Topdown(change),this.concertRepository.update(concert.id,change_amount),this.Ticketforbuyer.save(add),"Successful";
-                  }
-                  else{
+                         const add = this.Ticketforbuyer.create(addTicket);
+                          this.Ticketforbuyer.save(add)
+                         this.Ticketpayservice.Topdown(change)
+                          this.concertRepository.update(concert.id,change_amount)
+                      return "Successful";
+                 }
+                  else
+                  {
                     return "Ticket not enough"
                   }
 
@@ -132,7 +193,7 @@ export class ConcertService {
             }
         }
       }
-  }
+   }
   async buybyhiring(CreateconcerthiringDto:CreateconcerthiringDto){
     const user_id = CreateconcerthiringDto.reciever_id;
     const user_idd = Number(user_id)

@@ -22,6 +22,11 @@ export class ConcertController {
   getAllhiring(@Body('buyer_id', ParseIntPipe)buyer_id:number) {
     return this.concertService.gethiringAll(buyer_id); 
   }
+  @Post('recieveAll')
+
+  getAllreciever(@Body('reciever_id', ParseIntPipe)reciever_id:number) {
+    return this.concertService.getrecievingAll(reciever_id); 
+  }
 
    @Post('Ticket_id')
    gettICKETConcertById(@Body('id', ParseIntPipe) id: number) {
@@ -51,7 +56,7 @@ export class ConcertController {
   getinject(@Body()Create_sccceptingDto:Create_sccceptingDto){
       return this.concertService.getinject(Create_sccceptingDto)
   }
-  @Get('hiring')
+  @Post('hiring')
   @UsePipes(ValidationPipe)
   gethiring(@Body()Create_sccceptingDto:Create_sccceptingDto) {
     return this.concertService.gethiring(Create_sccceptingDto);
@@ -60,38 +65,11 @@ export class ConcertController {
   Addconcert(@Body() CreateconcertDto :CreateconcertDto){
     return this.concertService.addConcert(CreateconcertDto);
   }
-  @Post('buy')
-  @UsePipes(ValidationPipe)
- async buyconcert(@Body()CreateconcertbuyDto: CreateconcertbuyDto,@Res() response: Response){
-
-    const check = await this.concertService.BuyConcert(CreateconcertbuyDto);
-    switch (check) {
-      case "Dont have this user":
-        response.status(HttpStatus.CONFLICT).send('Dont have this user');
-        break;
-    
-      case "Please add the Ticket":
-        response.status(HttpStatus.CONFLICT).send('Please add the Ticket');
-        break;
-      
-      case "Dont have this concert":
-        response.status(HttpStatus.CONFLICT).send('Dont have this concert');
-        break;
-
-      case "Ticket was sold out":
-        response.status(HttpStatus.CONFLICT).send('Ticket was sold out');
-        break;
-      case"Ticket not enough":
-        response.status(HttpStatus.CONFLICT).send('Ticket not enough');
-        break;
-      default:
-        return CreateconcertbuyDto
-        break;
-    }
-  }
+  
   @Post('employ')
   @UsePipes(ValidationPipe)
   async employer(@Body() CreateconcerthiringDto:CreateconcerthiringDto,@Res() response: Response){
+    
     const check = await this.concertService.buybyhiring(CreateconcerthiringDto);
     switch (check) {
       case "Dont have this user":
@@ -153,6 +131,35 @@ export class ConcertController {
       default:
         response.status(HttpStatus.OK).send('success');
         break;   
+    }
+  }
+
+  @Post('buys')
+  @UsePipes(ValidationPipe)
+  async buyconcert(@Body()CreateconcertbuyDto: CreateconcertbuyDto){
+   const check = await this.concertService.BuyConcert(CreateconcertbuyDto);
+    switch (check) {
+      case "Dont have this user":
+      return  'Dont have this user'
+        break;
+    
+      case "Please add the Ticket":
+        return'Please add the Ticket'
+        break;
+      
+      case "Dont have this concert":
+        return'Dont have this concert'
+        break;
+
+      case "Ticket was sold out":
+        return'Ticket was sold out'
+        break;
+       case"Ticket not enough":
+       return'Ticket not enough'
+         break;
+      default:
+         return "success"
+      
     }
   }
 }
