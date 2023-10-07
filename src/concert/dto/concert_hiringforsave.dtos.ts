@@ -20,5 +20,7 @@ export class CreateconcerthiringforsaveDto {
 
   @IsNotEmpty()
   Accepting:boolean
+  @IsNotEmpty()
+  Complete:boolean
 
 }

@@ -63,7 +63,8 @@ export class ConcertService {
       reciever_id:Number(not_accept.reciever_id),
       TicketNum: not_accept.TicketNum,
       Ticketpay:Number( not_accept.TicketNum)*Number(concert.price),
-      Accepting: true
+      Accepting: true,
+      Complete: false
     }
     const check =  await this.gethiring(Create_sccceptingDto); 
     return this.TicketpayAllRepository.update(check.id,accept);
@@ -106,7 +107,8 @@ export class ConcertService {
             concert_name : concert_name,
             Ticketpay : test[i].Ticketpay,
             TicketNum : test[i].TicketNum,
-            Accepting : test[i].Accepting
+            Accepting : test[i].Accepting,
+            Complete : test[i].Complete
 
         }
         myArray[i] = myObject
@@ -137,7 +139,8 @@ async getrecievingAll(reciever_id:number){
           concert_name : concert_name,
           Ticketpay : test[i].Ticketpay,
           TicketNum : test[i].TicketNum,
-          Accepting : test[i].Accepting
+          Accepting : test[i].Accepting,
+          Complete : test[i].Complete
 
       }
       myArray[i] = myObject
@@ -254,7 +257,9 @@ async getrecievingAll(reciever_id:number){
                       reciever_id:Number(reciever.user_id),
                       TicketNum:CreateconcerthiringDto.TicketNum,
                       Ticketpay:Number(CreateconcerthiringDto.TicketNum * concert.price)+hiringvalue,
-                      Accepting : false
+                      Accepting : false,
+                      Complete : false
+
                   }
         
                  
@@ -325,9 +330,19 @@ async getrecievingAll(reciever_id:number){
                             Ticket:checks.TicketNum,
                             user_id: Create_sccceptingDto.reciever_id
                           }
+                          const Completehiring:CreateconcerthiringforsaveDto = {
+                            buyer_id : Number(checks.buyer_id),
+                            Concert_id:Number(concert.id),
+                            reciever_id:Number(checks.reciever_id),
+                            TicketNum:checks.TicketNum,
+                            Ticketpay:Number(checks.TicketNum * concert.price)+hiringvalue,
+                            Accepting : true,
+                            Complete : false
+      
+                        }
                           const add = this.Ticketforbuyer.create(addTicket);
                           console.log(add)
-                         return this.Ticketpayservice.Topup(hiring_money),this.TicketpayAllRepository.delete(checks.id),this.Ticketforbuyer.save(add),this.concertRepository.update(concert.id,change_amount),"success"
+                         return this.Ticketpayservice.Topup(hiring_money),this.TicketpayAllRepository.update(checks.id,Completehiring),this.Ticketforbuyer.save(add),this.concertRepository.update(concert.id,change_amount),"success"
                         }
                   else{
                     return "Ticketpay not enough"
