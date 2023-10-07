@@ -291,7 +291,7 @@ async getrecievingAll(reciever_id:number){
                if(concert.TicketNum<=0){
                 const change: CreateTicketpayDto = {
                   user_id: checks.reciever_id,
-                  Ticketpay: concert.price*Number(checks.TicketNum)-hiringvalue
+                  Ticketpay: concert.price*Number(checks.TicketNum)
                 }
                 return this.Ticketpayservice.Topdown(change),this.TicketpayAllRepository.delete(checks.id),"Ticket was sold out"
                }
@@ -300,7 +300,7 @@ async getrecievingAll(reciever_id:number){
                 if(checks == null){
                   const change: CreateTicketpayDto = {
                     user_id: checks.reciever_id,
-                    Ticketpay: concert.price*Number(checks.TicketNum)-hiringvalue
+                    Ticketpay: concert.price*Number(checks.TicketNum)
                   }
                   return this.Ticketpayservice.Topdown(change),this.TicketpayAllRepository.delete(checks.id),"Dont have this hiring"
                 }
