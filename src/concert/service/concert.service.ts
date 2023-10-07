@@ -53,7 +53,22 @@ export class ConcertService {
       console.log(print.Concert_id)
       return print
   }
+  async getComplete(id:number){
+    const Complete = await this.TicketpayAllRepository.find({where:{buyer_id:id,Complete:true}});
+    let myArray = new Array(Complete.length);
+    let myObject = new Object();
+    for(let i = 0; i<Complete.length;i++){
+      const concert = await this.getConcertById(Complete[i].Concert_id);
+      myObject={
+        PhotoUrl : concert.PhotoUrl,
+        Concert_name : concert.name ,
+        Ticketnum : Complete[i].TicketNum
+      }
+      myArray[i] = myObject
+    }
+  return myArray
 
+  }
   async getaccept(Create_sccceptingDto:Create_sccceptingDto){
     const concert = await this.getConcertByname(Create_sccceptingDto.Concert_name)
     const not_accept = await this.TicketpayAllRepository.findOne({where:{id:Create_sccceptingDto.id,Accepting:false}});
@@ -337,7 +352,7 @@ async getrecievingAll(reciever_id:number){
                             TicketNum:checks.TicketNum,
                             Ticketpay:Number(checks.TicketNum * concert.price)+hiringvalue,
                             Accepting : true,
-                            Complete : false
+                            Complete : true
       
                         }
                           const add = this.Ticketforbuyer.create(addTicket);

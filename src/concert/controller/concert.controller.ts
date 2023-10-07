@@ -65,7 +65,11 @@ export class ConcertController {
   Addconcert(@Body() CreateconcertDto :CreateconcertDto){
     return this.concertService.addConcert(CreateconcertDto);
   }
-  
+  @Post('Complete')
+  @UsePipes(ValidationPipe)
+  async getComplete(@Body() id:number){
+    return this.concertService.getComplete(id);
+  }
   @Post('employ')
   @UsePipes(ValidationPipe)
   async employer(@Body() CreateconcerthiringDto:CreateconcerthiringDto,@Res() response: Response){
