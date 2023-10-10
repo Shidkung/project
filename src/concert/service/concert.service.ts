@@ -12,6 +12,7 @@ import { CreateTicketforbuyDto } from '../dto/Ticketbuy.dtos';
 import { CreateconcerthiringforsaveDto } from '../dto/concert_hiringforsave.dtos';
 import { Create_sccceptingDto } from '../dto/concert_accepting.dtos';
 import { Test } from '@nestjs/testing';
+import { log } from 'console';
 @Injectable()
 export class ConcertService {
     constructor(
@@ -35,11 +36,16 @@ export class ConcertService {
     let myObject = new Object();
     for(let i = 0; i<get_TIcket.length;i++){
         const concert_id = get_TIcket[i].Concert_id
-        const concert = await this.concertRepository.find({where:{id:concert_id}})
+        console.log(concert_id)
+        const concert = await this.getConcertById(concert_id)
+        console.log(concert)
+        if(concert === null){
+          return "no this concert"
+        }
         myObject = {
-          url : concert[i].PhotoUrl,
-          Concert_name : concert[i].name,
-          Ticketnum : get_TIcket[i].Ticket
+            url : concert.PhotoUrl,
+            Concert_name : concert.name,
+            Ticket : get_TIcket[i].Ticket
         }
         myArray[i] = myObject
   }
@@ -50,7 +56,6 @@ export class ConcertService {
   }
    async gethiring(Create_sccceptingDto:Create_sccceptingDto){
       const print = await  this.TicketpayAllRepository.findOne({where:{id:Create_sccceptingDto.id,buyer_id:Create_sccceptingDto.buyer_id, reciever_id:Number(Create_sccceptingDto.reciever_id)}})
-      console.log(print.Concert_id)
       return print
   }
   async getComplete(id:number){
@@ -86,6 +91,7 @@ export class ConcertService {
   }
   
   async getinject(Create_sccceptingDto:Create_sccceptingDto){
+    const hiringvalue = 300;
     const check =  await this.gethiring(Create_sccceptingDto);
     console.log(check);
     if(check==null){
@@ -94,7 +100,7 @@ export class ConcertService {
     const concert = await this.getConcertByname(Create_sccceptingDto.Concert_name)
     const change: CreateTicketpayDto = {
       user_id: Create_sccceptingDto.reciever_id,
-      Ticketpay: Number(concert.price)*Number(check.TicketNum)
+      Ticketpay: (Number(concert.price)*Number(check.TicketNum))+hiringvalue
     }
     return this.Ticketpayservice.Topup(change),this.TicketpayAllRepository.delete(Create_sccceptingDto.id);
   }
@@ -324,11 +330,12 @@ async getrecievingAll(reciever_id:number){
                   }
                   return this.Ticketpayservice.Topdown(change),this.TicketpayAllRepository.delete(checks.id),"Dont have this hiring"
                 }
-                
-                  if(checks.Ticketpay-hiringvalue>=(concert.price * checks.TicketNum)){
+                console.log(concert.price * checks.TicketNum);
+                  if(checks.Ticketpay>=(concert.price * checks.TicketNum)){
                     if(checks.Accepting==true){
+                    if(checks.Complete==false){
                       const hiring_money: CreateTicketpayDto = {
-                        user_id: checks.reciever_id,
+                        user_id: checks.buyer_id,
                         Ticketpay: hiringvalue
                       }
                     
@@ -355,9 +362,17 @@ async getrecievingAll(reciever_id:number){
                             Complete : true
       
                         }
+                        
                           const add = this.Ticketforbuyer.create(addTicket);
-                          console.log(add)
-                         return this.Ticketpayservice.Topup(hiring_money),this.TicketpayAllRepository.update(checks.id,Completehiring),this.Ticketforbuyer.save(add),this.concertRepository.update(concert.id,change_amount),"success"
+                          this.TicketpayAllRepository.update(checks.id,Completehiring)
+                          this.Ticketforbuyer.save(add)
+                          this.concertRepository.update(concert.id,change_amount)
+                          console.log(hiring_money)
+                         return this.Ticketpayservice.Topup(hiring_money)
+                      }
+                      else{
+                        return "this hiring is completed"
+                      }
                         }
                   else{
                     return "Ticketpay not enough"

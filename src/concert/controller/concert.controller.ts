@@ -131,9 +131,12 @@ export class ConcertController {
       case 'Dont have this hiring':
         response.status(HttpStatus.CONFLICT).send('Dont have this hiring');
         break;
+        case 'this hiring is completed':
+          response.status(HttpStatus.CONFLICT).send('this hiring is completed');
+          break;
 
       default:
-        response.status(HttpStatus.OK).send('success');
+        response.status(HttpStatus.OK).send('sucess');
         break;   
     }
   }
