@@ -22,6 +22,12 @@ import { AppService } from './app.service';
         database: configService.get('DB_NAME'),
         entities: entities,
         synchronize: true,
+        ssl: {
+          rejectUnauthorized: false,  // Set to true if your PostgreSQL server has a valid SSL certificate
+        },
+        extra: {
+          sslmode: 'require',
+        }
       }),
       inject: [ConfigService],
     }),
