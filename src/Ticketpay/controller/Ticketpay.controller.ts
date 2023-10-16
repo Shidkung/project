@@ -2,7 +2,6 @@ import {Body,Controller,Get,HttpCode,Param,ParseIntPipe,Post,UsePipes,Validation
 import { Response } from 'express';
 import { CreateTicketpayDto } from '../dto/Ticketpay.dtos';
 import { TicketpayService } from '../service/Ticketpay.service';
-import { UsersS } from 'typeors';
 
     @Controller('Ticketpay')
     export class TicketpaysController {

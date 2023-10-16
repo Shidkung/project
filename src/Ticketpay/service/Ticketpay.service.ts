@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Ticketpay, UsersS } from '../../../typeors';
-import { Like, Repository } from 'typeorm';
+import { Ticketpay} from '../../../typeors';
+import { Repository } from 'typeorm';
 import { CreateTicketpayDto } from '../dto/Ticketpay.dtos';
-import { UsersService } from 'src/user/service/user.service';
+import { UsersService } from '../../../src/user/service/user.service';
 
 
 @Injectable()

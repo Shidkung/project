@@ -8,7 +8,6 @@ import { UsePipes } from '@nestjs/common/decorators';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import { Response } from 'express';
 import { Create_sccceptingDto } from '../dto/concert_accepting.dtos';
-import { UsersS } from 'typeors';
 @Controller('concerts')
 export class ConcertController {
   constructor(private readonly concertService: ConcertService) {}

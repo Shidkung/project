@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Ticketforbuyer,concert,TicketpayAll, UsersS } from '../../../typeors';
+import { Ticketforbuyer,concert,TicketpayAll } from '../../../typeors';
 import { Repository } from 'typeorm';
 import { CreateconcertDto } from '../dto/concert.dtos';
 import { CreateconcertbuyDto } from '../dto/concert_buy.dtos';
-import { UsersService } from 'src/user/service/user.service';
-import { TicketpayService } from 'src/Ticketpay/service/Ticketpay.service';
-import { CreateTicketpayDto } from 'src/Ticketpay/dto/Ticketpay.dtos';
+import { UsersService } from '../../../src/user/service/user.service';
+import { TicketpayService } from '../../../src/Ticketpay/service/Ticketpay.service';
+import { CreateTicketpayDto } from '../../../src/Ticketpay/dto/Ticketpay.dtos';
 import { CreateconcerthiringDto } from '../dto/concert_hiring.dtos';
 import { CreateTicketforbuyDto } from '../dto/Ticketbuy.dtos';
 import { CreateconcerthiringforsaveDto } from '../dto/concert_hiringforsave.dtos';
 import { Create_sccceptingDto } from '../dto/concert_accepting.dtos';
-import { Test } from '@nestjs/testing';
-import { log } from 'console';
 @Injectable()
 export class ConcertService {
     constructor(
